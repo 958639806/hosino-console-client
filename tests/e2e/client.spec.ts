@@ -15,6 +15,25 @@ async function openChat(page: Page) {
   await expect(page.getByLabel('消息内容')).toBeVisible();
 }
 
+test('能力协商迟到时保留正在填写的登录密码', async ({ page }) => {
+  let release!: () => void;
+  const delay = new Promise<void>(resolve => { release = resolve; });
+  await page.route('**/mock-api/api/mobile/capabilities', async route => {
+    const response = await route.fetch();
+    if (!route.request().headers().authorization) await delay;
+    await route.fulfill({ response });
+  });
+  await page.goto('/?mock=1');
+  await page.getByRole('button', { name: '连接开发 Mock', exact: true }).click();
+  await page.getByLabel('密码', { exact: true }).fill('mock-password');
+  const discovery = page.waitForResponse(response => response.url().includes('/api/mobile/capabilities'));
+  release();
+  await discovery;
+  await expect(page.getByLabel('密码', { exact: true })).toHaveValue('mock-password');
+  await page.getByRole('button', { name: '登录', exact: true }).click();
+  await expect(page.getByRole('heading', { name: '总览', exact: true })).toBeVisible();
+});
+
 test('手机布局完成登录、中文附件和发送；重复点击只提交一次', async ({ page }) => {
   let sends = 0;
   const uploads: string[] = [];

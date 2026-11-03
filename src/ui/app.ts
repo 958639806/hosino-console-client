@@ -143,7 +143,9 @@ export class ClientApp {
       }
       this.capabilities = capabilities;
       this.auth.recordSuccess();
-      this.render();
+      // Public discovery can finish while the user types a password. Preserve
+      // that form; authenticated negotiation is what opens the main workflow.
+      if (this.hasCredentials) this.render();
     } catch (error) {
       if (!this.profiles.isCurrent(snapshot) || generation !== this.negotiation) return;
       if (obj(error).status === 404) this.showNotice('服务器缺少移动端接口，请先安装配套的 hosino-console 服务端改造。', 'error');

@@ -8,7 +8,7 @@
 | --- | --- | --- |
 | 客户端静态检查 | TypeScript 类型检查 | 通过。 |
 | 客户端单元/fixture | Vitest：连接隔离、认证、安全存储适配、请求元数据、生命周期、JSON/SSE/上传/媒体及严格 Mock | 75 项通过；Mock 不连接 OpenClaw 或 QQ。 |
-| 浏览器端到端 | Playwright，手机视口 Chromium：中文附件、重复点击、响应丢失、重建后回执查询、离线、连接切换、退出及 CLI 页面 | 7 项通过；属于手机布局浏览器测试，不是 Android WebView/真机。 |
+| 浏览器端到端 | Playwright，手机视口 Chromium：中文附件、重复点击、响应丢失、重建后回执查询、离线、连接切换、退出及 CLI 页面 | 8 项通过；属于手机布局浏览器测试，不是 Android WebView/真机。 |
 | Web 生产资源 | TypeScript + Vite build；检查生产资源中的开发 Mock 标记 | 构建通过，生产资源不包含开发 Mock 入口标记。 |
 | 后端运行时与真实本地路由 | Node 测试：持久化认证、轮换/撤销、幂等冲突、并发、重启未知结果、CORS/CSRF、二进制鉴权及 CLI 记录；运行实际 HTTP 服务器并使用本地 fixture 网关/CLI | 29 项通过。验证了真实路由与本地可控执行，未验证真实远端 OpenClaw/模型 CLI。 |
 | 客户端依赖检查 | `npm audit --json` | 查询时 0 项已报告漏洞；已固定 esbuild 0.28.2，并将 rimraf 的 glob 固定为 14.0.3，见锁文件。 |
@@ -25,7 +25,7 @@
 | Android 工程 | JDK 21、compile/target SDK 36、Build Tools 35.0.0、minSdk 24、最低 WebView 105、Gradle wrapper 8.14.3 |
 | 配套后端 | [草稿 PR #3](https://github.com/958639806/hosino-console/pull/3)，commit `43846f7927ef82f046ed19f29989c4a8aa2d9f91` |
 | 客户端 commit | 见本次提交及生成的 `artifacts/build-manifest.json`，后者记录实际完整 SHA |
-| APK 路径 / SHA-256 /签名类型 | `android/app/build/outputs/apk/debug/app-debug.apk`；SHA-256 `7625fe01fb1c1a87b675160b0a63dab15c00deecc6e0fac0ef1c0d2731bdcfd4`；Android Debug 签名，约 4.2 MiB |
+| APK 路径 / SHA-256 /签名类型 | `android/app/build/outputs/apk/debug/app-debug.apk`；SHA-256 `58a1ee37862f522f61d6bc19b06d0c22ffcbd5b6b430a0e7133a01dc27c21525`；Android Debug 签名，约 4.2 MiB |
 
 ## 尚未执行
 
@@ -34,3 +34,5 @@ Android 安装启动、Keystore 实机持久化、Wi-Fi/蜂窝切换、锁屏与
 A6 技术验证和 A10 内测回归尚未关闭。后续按 [Android 验证矩阵](ANDROID-VALIDATION.md) 记录设备、系统版本、步骤、结果和失败项；仅有自动测试或 APK 不代表这些场景通过。
 
 配套后端 GitHub Actions「Mobile API」第 1 次运行已通过；本地 APK 已检查包含打包页面与 WebView 更新提示，且资源不包含开发 Mock 主机或代理路由。
+
+客户端首轮远程 CI 暴露了登录期间能力响应重绘表单的时序问题，以及 Android 初始化默认安装已移除 tools 包的问题。现已保留未认证表单、增加迟到能力响应回归，并在 CI 显式选择 platform-tools、platforms;android-36 与 build-tools;35.0.0。
