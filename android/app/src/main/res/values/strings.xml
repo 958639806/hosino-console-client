@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Hosino Console</string>
+    <string name="title_activity_main">Hosino Console</string>
+    <string name="package_name">com.hosino.console</string>
+    <string name="custom_url_scheme">com.hosino.console</string>
+</resources>
